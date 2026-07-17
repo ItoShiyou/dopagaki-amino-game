@@ -11,9 +11,16 @@ import { PushButtonsModeB } from './PushButtonsModeB'
 
 const FRAME_THEMES = [
   'ring-4 ring-white/20',
-  'ring-4 ring-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.6)]',
-  'ring-4 ring-fuchsia-400 shadow-[0_0_30px_rgba(232,121,249,0.7)]',
-  'ring-4 ring-yellow-300 shadow-[0_0_40px_rgba(253,224,71,0.8)]',
+  'ring-4 ring-cyan-400',
+  'ring-4 ring-fuchsia-400',
+  'ring-4 ring-yellow-300',
+]
+
+const FRAME_NEON_COLORS = [
+  'rgba(255,255,255,0.25)',
+  'rgba(34,211,238,0.85)',
+  'rgba(232,121,249,0.9)',
+  'rgba(253,224,71,0.95)',
 ]
 
 const FEVER_DURATION_MS = 15000
@@ -31,9 +38,10 @@ export function GameScreen({ state, onAnswer, onRevivalTap, onTogglePause }: Pro
 
   return (
     <div
-      className={`relative flex h-full w-full flex-col overflow-hidden transition-shadow duration-300 ${
+      className={`neon-bg neon-pulse relative flex h-full w-full flex-col overflow-hidden ${
         FRAME_THEMES[state.frameTheme]
       } ${state.fever ? 'animate-rainbow-bg bg-[linear-gradient(135deg,#3a0066,#000)]' : 'bg-gradient-to-b from-[#12002b] to-black'}`}
+      style={{ '--neon-color': FRAME_NEON_COLORS[state.frameTheme], animationDuration: '2.6s' } as React.CSSProperties}
     >
       <Hud
         life={state.life}

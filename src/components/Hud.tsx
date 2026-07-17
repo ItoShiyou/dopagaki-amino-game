@@ -24,7 +24,10 @@ export function Hud({
   return (
     <div className="z-20 flex flex-col gap-1 p-2">
       <div className="flex items-start justify-between gap-2">
-        <div className="rounded-xl border-2 border-red-500/70 bg-black/60 px-3 py-1.5 text-center shadow-[0_0_14px_rgba(239,68,68,0.5)]">
+        <div
+          className="neon-pulse rounded-xl border-2 border-red-500/70 bg-black/60 px-3 py-1.5 text-center"
+          style={{ '--neon-color': 'rgba(239,68,68,0.7)' } as React.CSSProperties}
+        >
           <div className="text-[9px] font-bold tracking-wider text-red-300">SCORE</div>
           <div className="text-xl font-black text-outline text-yellow-200 tabular-nums leading-tight">
             {score.toLocaleString()}
@@ -33,13 +36,16 @@ export function Hud({
         </div>
 
         {fever && (
-          <div className="flex-1 rounded-xl border-2 border-fuchsia-400 bg-black/50 px-2 py-1 text-center shadow-[0_0_20px_rgba(232,121,249,0.7)]">
+          <div className="neon-pulse flex-1 rounded-xl border-2 border-fuchsia-400 bg-black/50 px-2 py-1 text-center">
             <div className="rainbow-text text-sm font-black leading-tight">FEVER MODE!!</div>
             <div className="text-[10px] font-black leading-tight text-yellow-200">確変中!!</div>
           </div>
         )}
 
-        <div className="flex items-center gap-1.5 rounded-xl border-2 border-pink-400/70 bg-black/60 px-2 py-1.5 shadow-[0_0_14px_rgba(244,114,182,0.5)]">
+        <div
+          className="neon-pulse flex items-center gap-1.5 rounded-xl border-2 border-pink-400/70 bg-black/60 px-2 py-1.5"
+          style={{ '--neon-color': 'rgba(244,114,182,0.7)' } as React.CSSProperties}
+        >
           <div>
             <div className="text-[9px] font-bold tracking-wider text-pink-300">LIFE</div>
             <div className="flex gap-0.5">

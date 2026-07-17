@@ -55,10 +55,15 @@ export function PushButtonsModeB({ onTap, fallingItems, stage, disabled }: Props
               key={code}
               disabled={disabled}
               onClick={() => onTap(code)}
-              className={`rounded-2xl border-b-4 border-black/40 bg-gradient-to-b py-4 text-2xl font-black text-white shadow-lg transition-all active:translate-y-1 active:border-b-0 active:brightness-125 disabled:opacity-40 ${
+              className={`neon-pulse rounded-2xl border-b-4 border-black/40 bg-gradient-to-b py-4 text-2xl font-black text-white shadow-lg transition-all active:translate-y-1 active:border-b-0 active:brightness-125 disabled:opacity-40 ${
                 focus.isAtsu ? 'animate-shake ring-4 ring-yellow-300' : ''
               }`}
-              style={{ backgroundImage: `linear-gradient(to bottom, ${meta.color}, #000)` }}
+              style={
+                {
+                  backgroundImage: `linear-gradient(to bottom, ${meta.color}, #000)`,
+                  '--neon-color': meta.glow,
+                } as React.CSSProperties
+              }
             >
               {code}
             </button>

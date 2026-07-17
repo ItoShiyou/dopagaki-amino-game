@@ -18,16 +18,20 @@ export function KeypadModeA({ onTap, activeCodes, glowAssist, disabled }: Props)
             key={amino.code1}
             disabled={disabled}
             onClick={() => onTap(amino.code1)}
-            className="flex aspect-square flex-col items-center justify-center rounded-lg border-2 bg-black/50 transition-all active:scale-90 active:brightness-125 disabled:opacity-40"
-            style={{
-              borderColor: isHint ? '#ffd700' : meta.color,
-              boxShadow: isHint ? '0 0 14px rgba(255,215,0,0.85)' : `0 0 6px ${meta.glow}`,
-            }}
+            className="neon-pulse flex aspect-square flex-col items-center justify-center rounded-lg border-2 bg-black/60 transition-all active:scale-90 active:brightness-125 disabled:opacity-40"
+            style={
+              {
+                '--neon-color': isHint ? '#ffd700' : meta.glow,
+                borderColor: isHint ? '#ffd700' : meta.color,
+              } as React.CSSProperties
+            }
           >
             <span className={`text-base font-black leading-none ${isHint ? 'text-yellow-200' : 'text-white'}`}>
               {amino.code1}
             </span>
-            <span className="mt-0.5 text-[7px] font-semibold leading-none text-white/60">{amino.nameEn}</span>
+            <span className="mt-0.5 text-[7px] font-semibold leading-none" style={{ color: meta.color }}>
+              {CATEGORY_META[amino.category].label}
+            </span>
           </button>
         )
       })}

@@ -14,12 +14,12 @@ function NextBox({ preview }: { preview: PreviewItem }) {
       <span className="mb-0.5 text-[9px] font-bold tracking-wider text-white/60">NEXT</span>
       <div
         key={preview.id}
-        className={`animate-pop flex h-16 w-16 flex-col items-center justify-center rounded-xl border-2 text-center text-[11px] font-bold leading-tight ${
+        className={`neon-pulse animate-pop flex h-16 w-16 flex-col items-center justify-center rounded-xl border-2 text-center text-[11px] font-bold leading-tight ${
           showAtsu
-            ? 'border-yellow-300 bg-gradient-to-br from-pink-500 via-yellow-400 to-fuchsia-600 text-black animate-glow-pulse'
+            ? 'border-yellow-300 bg-gradient-to-br from-pink-500 via-yellow-400 to-fuchsia-600 text-black'
             : 'bg-black/70 text-white/90'
         }`}
-        style={showAtsu ? undefined : { borderColor: meta.color, boxShadow: `0 0 10px ${meta.glow}` }}
+        style={{ '--neon-color': showAtsu ? '#ffd700' : meta.glow, borderColor: showAtsu ? undefined : meta.color } as React.CSSProperties}
       >
         {showAtsu ? (
           <>
@@ -53,7 +53,7 @@ export function PreviewPanel({ previewQueue }: Props) {
                 <div
                   key={p.id}
                   className="flex h-6 w-12 items-center justify-center rounded-md border text-[10px] font-bold text-white/90"
-                  style={{ borderColor: meta.color + 'aa' }}
+                  style={{ borderColor: meta.color + 'aa', boxShadow: `0 0 6px ${meta.glow}` }}
                 >
                   {p.amino.code3}
                 </div>

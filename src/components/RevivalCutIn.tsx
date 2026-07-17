@@ -21,13 +21,17 @@ export function RevivalCutIn({ visible, offered, tapsNeeded, tapsDone, onTap }: 
 
   return (
     <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/70">
-      <div className="animate-slide-in-cutin rounded-3xl border-4 border-red-500 bg-gradient-to-br from-red-900 via-black to-red-900 px-6 py-8 text-center shadow-[0_0_60px_rgba(239,68,68,0.8)]">
-        <p className="text-3xl font-black text-outline text-red-400">諦めるな！！</p>
+      <div
+        className="neon-pulse animate-slide-in-cutin rounded-3xl border-4 border-red-500 bg-gradient-to-br from-red-900 via-black to-red-900 px-6 py-8 text-center"
+        style={{ '--neon-color': 'rgba(239,68,68,0.9)' } as React.CSSProperties}
+      >
+        <p className="rainbow-text text-3xl font-black text-outline">諦めるな！！</p>
         <p className="mt-1 text-sm text-white/70">連打で復活のチャンス！！</p>
 
         <button
           onClick={onTap}
-          className="mx-auto mt-6 flex h-32 w-32 items-center justify-center rounded-full border-8 border-red-300 bg-gradient-to-br from-red-500 to-red-700 text-xl font-black text-white shadow-[0_0_40px_rgba(239,68,68,0.9)] transition-transform active:scale-90"
+          className="neon-pulse mx-auto mt-6 flex h-32 w-32 items-center justify-center rounded-full border-8 border-red-300 bg-gradient-to-br from-red-500 to-red-700 text-xl font-black text-white transition-transform active:scale-90"
+          style={{ '--neon-color': 'rgba(239,68,68,1)', animationDuration: '0.7s' } as React.CSSProperties}
         >
           連打！
         </button>

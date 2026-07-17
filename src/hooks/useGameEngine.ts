@@ -19,12 +19,12 @@ const REVIVAL_TAPS_NEEDED = 12
 const REVIVAL_TIME_LIMIT_MS = 4000
 const GLOW_ASSIST_COMBO = 10
 const TICK_MS = 100
-const LANE_COUNT = 5
+const LANE_COUNT = 4
 const PREVIEW_QUEUE_LEN = 4
 
 const FALL_DURATION_BY_STAGE: Record<Stage, number> = { 1: 4500, 2: 3800, 3: 3000 }
-const MAX_CONCURRENT_BY_STAGE: Record<Stage, number> = { 1: 2, 2: 3, 3: 4 }
-const SPAWN_INTERVAL_BY_STAGE: Record<Stage, number> = { 1: 1500, 2: 1150, 3: 900 }
+const MAX_CONCURRENT_BY_STAGE: Record<Stage, number> = { 1: 2, 2: 2, 3: 3 }
+const SPAWN_INTERVAL_BY_STAGE: Record<Stage, number> = { 1: 1700, 2: 1350, 3: 1050 }
 
 function displayTextFor(amino: AminoAcid, format: 'name' | 'code3'): string {
   return format === 'name' ? amino.nameJa : amino.code3
@@ -32,14 +32,30 @@ function displayTextFor(amino: AminoAcid, format: 'name' | 'code3'): string {
 
 function laneToPercent(lane: number): number {
   const slot = 100 / LANE_COUNT
-  const jitter = (Math.random() - 0.5) * (slot * 0.4)
+  const jitter = (Math.random() - 0.5) * (slot * 0.15)
   return slot * lane + slot / 2 + jitter
 }
 
+/** 隣接レーンでの視覚的な衝突を避けるため、既存レーンから最も離れた空きレーンを優先して選ぶ */
 function pickLane(occupied: Set<number>): number {
-  const free = Array.from({ length: LANE_COUNT }, (_, i) => i).filter((l) => !occupied.has(l))
-  const pool = free.length > 0 ? free : Array.from({ length: LANE_COUNT }, (_, i) => i)
-  return pool[Math.floor(Math.random() * pool.length)]
+  const all = Array.from({ length: LANE_COUNT }, (_, i) => i)
+  const free = all.filter((l) => !occupied.has(l))
+  const pool = free.length > 0 ? free : all
+  if (occupied.size === 0) {
+    return pool[Math.floor(Math.random() * pool.length)]
+  }
+  let bestScore = -1
+  let candidates: number[] = []
+  for (const lane of pool) {
+    const minDist = Math.min(...Array.from(occupied, (o) => Math.abs(o - lane)))
+    if (minDist > bestScore) {
+      bestScore = minDist
+      candidates = [lane]
+    } else if (minDist === bestScore) {
+      candidates.push(lane)
+    }
+  }
+  return candidates[Math.floor(Math.random() * candidates.length)]
 }
 
 function buildPreview(stage: Stage, seq: number): PreviewItem {
@@ -239,12 +255,13 @@ function reducer(state: EngineState, action: Action): EngineState {
       let lastSpawnClock = state.lastSpawnClock
       let itemSeq = state.itemSeq
 
-      const maxConcurrent = MAX_CONCURRENT_BY_STAGE[state.stage] + (fever ? 1 : 0)
+      const maxConcurrent = Math.min(LANE_COUNT, MAX_CONCURRENT_BY_STAGE[state.stage] + (fever ? 1 : 0))
       const spawnInterval = SPAWN_INTERVAL_BY_STAGE[state.stage] * (fever ? 0.7 : 1)
 
       if (
         !revivalPending &&
         fallingItems.length < maxConcurrent &&
+        fallingItems.length < LANE_COUNT &&
         clock - lastSpawnClock >= spawnInterval &&
         previewQueue.length > 0
       ) {

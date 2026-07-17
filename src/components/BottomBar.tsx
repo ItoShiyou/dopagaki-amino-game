@@ -10,7 +10,7 @@ export function BottomBar({ hits }: Props) {
           {[6, 10, 5, 12, 8].map((h, i) => (
             <span
               key={i}
-              className="w-[3px] animate-pulse rounded-full bg-cyan-400"
+              className="w-[3px] animate-pulse rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.9)]"
               style={{ height: `${h}px`, animationDelay: `${i * 0.1}s` }}
             />
           ))}

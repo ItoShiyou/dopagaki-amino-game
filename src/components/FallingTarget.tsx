@@ -14,33 +14,34 @@ export function FallingTarget({ item, paused }: Props) {
       className="absolute -translate-x-1/2"
       style={{
         left: `${item.leftPercent}%`,
-        top: '-15%',
+        top: '0%',
         animation: `fall ${item.fallDurationMs}ms linear forwards`,
         animationPlayState: paused ? 'paused' : 'running',
       }}
     >
       <div
-        className="pointer-events-none absolute left-1/2 top-0 h-32 w-px -translate-x-1/2 -translate-y-full"
-        style={{ background: `linear-gradient(to top, ${meta.color}, transparent)`, opacity: 0.6 }}
+        className="neon-trail pointer-events-none absolute left-1/2 top-0 h-24 w-1 -translate-x-1/2 -translate-y-full blur-[1px]"
+        style={{ background: `linear-gradient(to top, ${meta.color}, transparent)` }}
       />
       <div
         key={item.id}
-        className={`animate-pop whitespace-nowrap rounded-xl border-[3px] px-3 py-1.5 text-center font-black shadow-xl ${
+        className={`neon-pulse animate-pop flex h-[70px] w-[76px] flex-col items-center justify-center rounded-xl border-[3px] px-1 text-center font-black shadow-xl ${
           item.isAtsu
-            ? 'border-yellow-300 bg-gradient-to-br from-pink-500 via-yellow-400 to-fuchsia-600 text-black animate-glow-pulse'
-            : 'bg-black/75 text-white'
+            ? 'border-yellow-300 bg-gradient-to-br from-pink-500 via-yellow-400 to-fuchsia-600 text-black'
+            : 'bg-black/80 text-white'
         }`}
         style={
-          item.isAtsu
-            ? undefined
-            : { borderColor: meta.color, boxShadow: `0 0 14px ${meta.glow}` }
+          {
+            '--neon-color': item.isAtsu ? '#ffd700' : meta.color,
+            borderColor: item.isAtsu ? undefined : meta.color,
+          } as React.CSSProperties
         }
       >
-        <div className="text-base leading-tight">
-          {item.isAtsu && <span className="mr-1">🔥</span>}
+        <div className="text-[13px] leading-[1.15] [overflow-wrap:anywhere]">
+          {item.isAtsu && <span className="mr-0.5">🔥</span>}
           {item.displayText}
         </div>
-        {item.isAtsu && <div className="text-[10px] font-black leading-tight text-red-900">激アツ!!</div>}
+        {item.isAtsu && <div className="mt-0.5 text-[9px] font-black leading-none text-red-900">激アツ!!</div>}
       </div>
     </div>
   )
