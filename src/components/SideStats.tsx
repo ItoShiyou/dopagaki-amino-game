@@ -9,7 +9,7 @@ export function SideStats({ combo, maxCombo, stage }: Props) {
     <div className="absolute left-2 top-2 z-20 flex flex-col items-start gap-1.5">
       <div
         key={combo}
-        className="neon-pulse animate-pop rounded-xl border-2 border-yellow-300 bg-black/60 px-2.5 py-1 text-center"
+        className="neon-pulse-pop rounded-xl border-2 border-yellow-300 bg-black/60 px-2.5 py-1 text-center"
         style={{ '--neon-color': 'rgba(253,224,71,0.75)' } as React.CSSProperties}
       >
         <div className="text-[9px] font-bold tracking-wider text-yellow-200">COMBO</div>

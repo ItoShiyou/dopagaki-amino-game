@@ -25,7 +25,7 @@ export function FallingTarget({ item, paused }: Props) {
       />
       <div
         key={item.id}
-        className={`neon-pulse animate-pop flex h-[70px] w-[76px] flex-col items-center justify-center rounded-xl border-[3px] px-1 text-center font-black shadow-xl ${
+        className={`neon-pulse-pop flex h-[70px] w-[76px] flex-col items-center justify-center rounded-xl border-[3px] px-1 text-center font-black shadow-xl ${
           item.isAtsu
             ? 'border-yellow-300 bg-gradient-to-br from-pink-500 via-yellow-400 to-fuchsia-600 text-black'
             : 'bg-black/80 text-white'

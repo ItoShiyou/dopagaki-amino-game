@@ -22,7 +22,7 @@ export function RevivalCutIn({ visible, offered, tapsNeeded, tapsDone, onTap }: 
   return (
     <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/70">
       <div
-        className="neon-pulse animate-slide-in-cutin rounded-3xl border-4 border-red-500 bg-gradient-to-br from-red-900 via-black to-red-900 px-6 py-8 text-center"
+        className="neon-pulse-cutin rounded-3xl border-4 border-red-500 bg-gradient-to-br from-red-900 via-black to-red-900 px-6 py-8 text-center"
         style={{ '--neon-color': 'rgba(239,68,68,0.9)' } as React.CSSProperties}
       >
         <p className="rainbow-text text-3xl font-black text-outline">諦めるな！！</p>

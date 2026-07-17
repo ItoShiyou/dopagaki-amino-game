@@ -68,12 +68,48 @@ html, body, #root {
     radial-gradient(circle at 85% 25%, rgba(255, 0, 200, 0.16), transparent 40%),
     radial-gradient(circle at 50% 90%, rgba(160, 0, 255, 0.16), transparent 45%);
   background-size: 200% 200%;
-  animation: neon-bg-drift 12s ease-in-out infinite;
 }
 
 @keyframes neon-bg-drift {
   0%, 100% { background-position: 0% 0%, 100% 0%, 50% 100%; }
   50% { background-position: 20% 30%, 70% 40%, 60% 70%; }
+}
+
+@keyframes rainbow-hue {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/*
+ * ゲーム画面の外枠は複数のループアニメーション(背景ドリフト/ネオン点滅/
+ * フィーバー中の色相回転)を同時にかける必要がある。Tailwindの animate-*
+ * ユーティリティを重ね掛けすると `animation` ショートハンドが上書きし合って
+ * 片方しか効かなくなる(=フラッシュが消えない等のバグの元)ため、
+ * 1つのクラスにまとめて comma区切りで指定する。
+ */
+.game-frame {
+  animation: neon-bg-drift 12s ease-in-out infinite, neon-pulse 2.6s ease-in-out infinite;
+}
+
+.game-frame.fever {
+  animation:
+    neon-bg-drift 12s ease-in-out infinite,
+    neon-pulse 2.6s ease-in-out infinite,
+    rainbow-hue 3s linear infinite;
+}
+
+/* 同様の理由で、1回限りの登場アニメーションとネオン点滅を同じ要素に
+   掛けるときは必ずこの組み合わせクラスを使う(単体クラスの重ね掛け禁止)。 */
+.neon-pulse-pop {
+  animation: pop 0.3s ease-out forwards, neon-pulse 1.8s ease-in-out infinite;
+}
+
+.neon-pulse-shake {
+  animation: shake 0.5s ease-in-out infinite, neon-pulse 1.8s ease-in-out infinite;
+}
+
+.neon-pulse-cutin {
+  animation: slide-in-cutin 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards, neon-pulse 1.8s ease-in-out infinite;
 }
 
 @keyframes ring-burst {

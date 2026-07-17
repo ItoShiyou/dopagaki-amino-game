@@ -38,10 +38,12 @@ export function GameScreen({ state, onAnswer, onRevivalTap, onTogglePause }: Pro
 
   return (
     <div
-      className={`neon-bg neon-pulse relative flex h-full w-full flex-col overflow-hidden ${
-        FRAME_THEMES[state.frameTheme]
-      } ${state.fever ? 'animate-rainbow-bg bg-[linear-gradient(135deg,#3a0066,#000)]' : 'bg-gradient-to-b from-[#12002b] to-black'}`}
-      style={{ '--neon-color': FRAME_NEON_COLORS[state.frameTheme], animationDuration: '2.6s' } as React.CSSProperties}
+      className={`game-frame neon-bg relative flex h-full w-full flex-col overflow-hidden ${
+        state.fever ? 'fever' : ''
+      } ${FRAME_THEMES[state.frameTheme]} ${
+        state.fever ? 'bg-[linear-gradient(135deg,#3a0066,#000)]' : 'bg-gradient-to-b from-[#12002b] to-black'
+      }`}
+      style={{ '--neon-color': FRAME_NEON_COLORS[state.frameTheme] } as React.CSSProperties}
     >
       <Hud
         life={state.life}

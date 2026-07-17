@@ -13,8 +13,11 @@ const FLASH_CLASS: Record<Props['flashColor'], string> = {
   gold: 'bg-yellow-300',
   red: 'bg-red-500',
   white: 'bg-white',
-  rainbow:
-    'bg-gradient-to-br from-pink-500 via-yellow-300 via-30% to-fuchsia-600 animate-rainbow-bg',
+  // 注意: animate-flash(0.5秒でフェードアウト)と同じ要素に animate-rainbow-bg 等の
+  // 別の `animation` を重ねると、CSSの animation ショートハンドが競合してどちらか
+  // 一方しか効かなくなり、フェードアウトしないまま虹色オーバーレイが残り続けるバグになる。
+  // そのため rainbow は単一のグラデーションのみとし、無限ループ系アニメーションは付けない。
+  rainbow: 'bg-gradient-to-br from-pink-500 via-yellow-300 via-30% via-cyan-300 to-fuchsia-600',
 }
 
 function Particles({ particleKey, color }: { particleKey: number; color: string }) {
