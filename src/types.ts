@@ -11,7 +11,8 @@ export interface FallingItem {
   isAtsu: boolean
   fallDurationMs: number
   leftPercent: number
-  spawnedAt: number
+  lane: number
+  spawnClock: number
 }
 
 export interface PreviewItem {
@@ -33,10 +34,14 @@ export interface EngineState {
   score: number
   combo: number
   maxCombo: number
+  hits: number
   fever: boolean
   feverTimeLeftMs: number
-  current: FallingItem | null
-  preview: PreviewItem | null
+  paused: boolean
+  gameClock: number
+  lastSpawnClock: number
+  fallingItems: FallingItem[]
+  previewQueue: PreviewItem[]
   frameTheme: FrameTheme
   flashKey: number
   flashColor: 'gold' | 'red' | 'white' | 'rainbow'

@@ -1,7 +1,9 @@
 import type { EngineState } from '../types'
 import { FallingTarget } from './FallingTarget'
 import { PreviewPanel } from './PreviewPanel'
+import { SideStats } from './SideStats'
 import { Hud } from './Hud'
+import { BottomBar } from './BottomBar'
 import { EffectsLayer } from './EffectsLayer'
 import { RevivalCutIn } from './RevivalCutIn'
 import { KeypadModeA } from './KeypadModeA'
@@ -20,9 +22,13 @@ interface Props {
   state: EngineState
   onAnswer: (code1: string) => void
   onRevivalTap: () => void
+  onTogglePause: () => void
 }
 
-export function GameScreen({ state, onAnswer, onRevivalTap }: Props) {
+export function GameScreen({ state, onAnswer, onRevivalTap, onTogglePause }: Props) {
+  const activeCodes = new Set(state.fallingItems.map((f) => f.amino.code1))
+  const multiplier = state.fever ? 10 : 1
+
   return (
     <div
       className={`relative flex h-full w-full flex-col overflow-hidden transition-shadow duration-300 ${
@@ -33,15 +39,37 @@ export function GameScreen({ state, onAnswer, onRevivalTap }: Props) {
         life={state.life}
         maxLife={state.maxLife}
         score={state.score}
-        stage={state.stage}
+        multiplier={multiplier}
         fever={state.fever}
         feverTimeLeftMs={state.feverTimeLeftMs}
         feverDurationMs={FEVER_DURATION_MS}
+        paused={state.paused}
+        onTogglePause={onTogglePause}
       />
 
       <div className="relative flex-1">
-        <PreviewPanel preview={state.preview} />
-        {state.current && <FallingTarget item={state.current} />}
+        <div className="absolute inset-0 z-10">
+          {state.fallingItems.map((item) => (
+            <FallingTarget key={item.id} item={item} paused={state.paused || state.revivalPending} />
+          ))}
+        </div>
+        <SideStats combo={state.combo} maxCombo={state.maxCombo} stage={state.stage} />
+        <PreviewPanel previewQueue={state.previewQueue} />
+
+        {state.paused && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/70">
+            <p className="text-outline animate-pop text-3xl font-black text-white">一時停止中</p>
+          </div>
+        )}
+
+        <EffectsLayer
+          flashKey={state.flashKey}
+          flashColor={state.flashColor}
+          particleKey={state.particleKey}
+          particleColor={state.particleColor}
+          comboPopupKey={state.comboPopupKey}
+          combo={state.combo}
+        />
       </div>
 
       <div
@@ -53,32 +81,21 @@ export function GameScreen({ state, onAnswer, onRevivalTap }: Props) {
         {state.mode === 'A' ? (
           <KeypadModeA
             onTap={onAnswer}
-            correctCode={state.current?.amino.code1 ?? null}
+            activeCodes={activeCodes}
             glowAssist={state.glowAssist}
-            disabled={!state.current || state.revivalPending}
-          />
-        ) : state.current ? (
-          <PushButtonsModeB
-            onTap={onAnswer}
-            correctCode={state.current.amino.code1}
-            targetId={state.current.id}
-            stage={state.stage}
-            isAtsu={state.current.isAtsu}
-            disabled={state.revivalPending}
+            disabled={state.revivalPending || state.paused}
           />
         ) : (
-          <div className="h-24" />
+          <PushButtonsModeB
+            onTap={onAnswer}
+            fallingItems={state.fallingItems}
+            stage={state.stage}
+            disabled={state.revivalPending || state.paused}
+          />
         )}
       </div>
 
-      <EffectsLayer
-        flashKey={state.flashKey}
-        flashColor={state.flashColor}
-        particleKey={state.particleKey}
-        particleColor={state.particleColor}
-        comboPopupKey={state.comboPopupKey}
-        combo={state.combo}
-      />
+      <BottomBar hits={state.hits} />
 
       <RevivalCutIn
         visible={state.revivalPending}
