@@ -1,3 +1,5 @@
+import { getTierMeta } from '../lib/comboTier'
+
 interface Props {
   combo: number
   maxCombo: number
@@ -5,15 +7,20 @@ interface Props {
 }
 
 export function SideStats({ combo, maxCombo, stage }: Props) {
+  const meta = getTierMeta(combo)
+
   return (
     <div className="absolute left-2 top-2 z-20 flex flex-col items-start gap-1.5">
       <div
         key={combo}
-        className="neon-pulse-pop rounded-xl border-2 border-yellow-300 bg-black/60 px-2.5 py-1 text-center"
-        style={{ '--neon-color': 'rgba(253,224,71,0.75)' } as React.CSSProperties}
+        className={`neon-pulse-pop rounded-xl border-2 bg-black/60 px-2.5 py-1 text-center ${meta.textClass}`}
+        style={{ '--neon-color': meta.glow, borderColor: meta.color } as React.CSSProperties}
       >
-        <div className="text-[9px] font-bold tracking-wider text-yellow-200">COMBO</div>
-        <div className="text-lg font-black leading-tight text-outline text-yellow-300 tabular-nums">
+        <div className="text-[9px] font-bold tracking-wider" style={{ color: meta.color }}>
+          COMBO
+        </div>
+        <div className="text-lg font-black leading-tight text-outline tabular-nums">
+          {meta.icon}
           {combo}
           <span className="ml-0.5 text-[10px]">COMBO!</span>
         </div>

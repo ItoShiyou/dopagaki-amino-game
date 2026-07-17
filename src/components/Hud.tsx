@@ -21,6 +21,7 @@ export function Hud({
   paused,
   onTogglePause,
 }: Props) {
+  const lifeCritical = life === 1 && !fever
   return (
     <div className="z-20 flex flex-col gap-1 p-2">
       <div className="flex items-start justify-between gap-2">
@@ -43,14 +44,25 @@ export function Hud({
         )}
 
         <div
-          className="neon-pulse flex items-center gap-1.5 rounded-xl border-2 border-pink-400/70 bg-black/60 px-2 py-1.5"
-          style={{ '--neon-color': 'rgba(244,114,182,0.7)' } as React.CSSProperties}
+          className={`neon-pulse flex items-center gap-1.5 rounded-xl border-2 bg-black/60 px-2 py-1.5 ${
+            lifeCritical ? 'border-red-500' : 'border-pink-400/70'
+          }`}
+          style={
+            { '--neon-color': lifeCritical ? 'rgba(255,0,0,0.95)' : 'rgba(244,114,182,0.7)' } as React.CSSProperties
+          }
         >
           <div>
-            <div className="text-[9px] font-bold tracking-wider text-pink-300">LIFE</div>
+            <div className={`text-[9px] font-bold tracking-wider ${lifeCritical ? 'text-red-400' : 'text-pink-300'}`}>
+              LIFE
+            </div>
             <div className="flex gap-0.5">
               {Array.from({ length: maxLife }, (_, i) => (
-                <span key={i} className={`text-base ${i < life ? 'opacity-100' : 'opacity-20 grayscale'}`}>
+                <span
+                  key={i}
+                  className={`text-base ${i < life ? 'opacity-100' : 'opacity-20 grayscale'} ${
+                    lifeCritical && i < life ? 'animate-pulse' : ''
+                  }`}
+                >
                   ❤️
                 </span>
               ))}

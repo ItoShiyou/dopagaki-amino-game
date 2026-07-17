@@ -121,6 +121,9 @@ function initialState(): EngineState {
     particleColor: '#ffd700',
     comboPopupKey: 0,
     wrongShakeKey: 0,
+    correctImpactKey: 0,
+    lastScoreGain: 0,
+    scorePopupKey: 0,
     glowAssist: false,
     revivalPending: false,
     revivalOffered: false,
@@ -332,6 +335,8 @@ function reducer(state: EngineState, action: Action): EngineState {
         crackKey = state.crackKey + 1
       }
 
+      const gain = base * multiplier
+
       return {
         ...state,
         fallingItems,
@@ -347,7 +352,10 @@ function reducer(state: EngineState, action: Action): EngineState {
         flashColor,
         particleKey: state.particleKey + 1,
         particleColor: wasAtsu ? '#ff2fd0' : '#ffd700',
-        comboPopupKey: combo >= 3 ? state.comboPopupKey + 1 : state.comboPopupKey,
+        comboPopupKey: state.comboPopupKey + 1,
+        correctImpactKey: state.correctImpactKey + 1,
+        lastScoreGain: gain,
+        scorePopupKey: state.scorePopupKey + 1,
         glowAssist: combo >= GLOW_ASSIST_COMBO,
       }
     }

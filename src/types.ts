@@ -50,6 +50,9 @@ export interface EngineState {
   particleColor: string
   comboPopupKey: number
   wrongShakeKey: number
+  correctImpactKey: number
+  lastScoreGain: number
+  scorePopupKey: number
   glowAssist: boolean
   revivalPending: boolean
   revivalOffered: boolean

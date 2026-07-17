@@ -112,6 +112,129 @@ html, body, #root {
   animation: slide-in-cutin 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards, neon-pulse 1.8s ease-in-out infinite;
 }
 
+.ambient-particle {
+  animation-name: ambient-float;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+@keyframes ambient-float {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-640px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes laser-sweep {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+.laser-sweep {
+  animation: laser-sweep 2.4s linear infinite;
+}
+
+@keyframes speed-lines {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 400px; }
+}
+
+.fever-speedlines {
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.12) 0px,
+    rgba(255, 255, 255, 0.12) 2px,
+    transparent 2px,
+    transparent 26px
+  );
+  animation: speed-lines 0.6s linear infinite;
+}
+
+@keyframes heartbeat-scale {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.035); }
+  40% { transform: scale(1); }
+  55% { transform: scale(1.05); }
+  70% { transform: scale(1); }
+}
+
+.life-critical {
+  animation: heartbeat-scale 1s ease-in-out infinite;
+}
+
+@keyframes vignette-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.75; }
+}
+
+.vignette-critical {
+  animation: vignette-pulse 1s ease-in-out infinite;
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(180, 0, 0, 0.75) 100%);
+}
+
+.spin-slow {
+  animation: spin-slow 4s linear infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes zebra-shift {
+  0% { background-position: 0 0; }
+  100% { background-position: 56px 0; }
+}
+
+.zebra-atsu {
+  background-image: repeating-linear-gradient(
+    45deg,
+    #ffd700 0px,
+    #ffd700 10px,
+    #111 10px,
+    #111 20px
+  );
+  animation: zebra-shift 0.8s linear infinite;
+}
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(-3.5deg) scale(1); }
+  50% { transform: rotate(3.5deg) scale(1.04); }
+}
+
+.wobble {
+  animation: wobble 1.6s ease-in-out infinite;
+}
+
+@keyframes aura-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.aura-ring {
+  animation: aura-spin 3s linear infinite;
+  border-style: dashed;
+}
+
 @keyframes ring-burst {
   0% { transform: scale(0.3); opacity: 0.9; border-width: 6px; }
   100% { transform: scale(2.6); opacity: 0; border-width: 1px; }
