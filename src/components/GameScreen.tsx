@@ -10,7 +10,6 @@ import { ComboMegaDisplay } from './ComboMegaDisplay'
 import { ScorePopup } from './ScorePopup'
 import { AmbientParticles } from './AmbientParticles'
 import { RevivalCutIn } from './RevivalCutIn'
-import { KeypadModeA } from './KeypadModeA'
 import { PushButtonsModeB } from './PushButtonsModeB'
 import { useCameraFX } from '../hooks/useCameraFX'
 import { getTierMeta } from '../lib/comboTier'
@@ -39,7 +38,6 @@ interface Props {
 }
 
 export function GameScreen({ state, onAnswer, onRevivalTap, onTogglePause }: Props) {
-  const activeCodes = new Set(state.fallingItems.map((f) => f.amino.code1))
   const multiplier = state.fever ? 10 : 1
   const cameraControls = useCameraFX(state.correctImpactKey, state.wrongShakeKey)
   const lifeCritical = state.life === 1 && !state.fever && !state.revivalPending
@@ -112,21 +110,12 @@ export function GameScreen({ state, onAnswer, onRevivalTap, onTogglePause }: Pro
         </div>
 
         <div className="z-20 border-t border-white/10 bg-black/40 backdrop-blur-sm">
-          {state.mode === 'A' ? (
-            <KeypadModeA
-              onTap={onAnswer}
-              activeCodes={activeCodes}
-              glowAssist={state.glowAssist}
-              disabled={state.revivalPending || state.paused}
-            />
-          ) : (
-            <PushButtonsModeB
-              onTap={onAnswer}
-              fallingItems={state.fallingItems}
-              stage={state.stage}
-              disabled={state.revivalPending || state.paused}
-            />
-          )}
+          <PushButtonsModeB
+            onTap={onAnswer}
+            fallingItems={state.fallingItems}
+            stage={state.stage}
+            disabled={state.revivalPending || state.paused}
+          />
         </div>
 
         <BottomBar hits={state.hits} />

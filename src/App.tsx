@@ -21,7 +21,7 @@ export default function App() {
         <GameOverScreen
           score={state.score}
           maxCombo={state.maxCombo}
-          onRetry={() => startGame(state.mode, state.stage)}
+          onRetry={() => startGame(state.stage)}
           onTitle={returnToTitle}
         />
       )}

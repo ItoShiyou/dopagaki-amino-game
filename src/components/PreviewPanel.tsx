@@ -23,13 +23,15 @@ function NextBox({ preview }: { preview: PreviewItem }) {
       >
         {showAtsu ? (
           <>
-            <span>🔥{preview.amino.code3}</span>
+            <span className="text-xl">🔥</span>
             <span className="text-[8px] text-red-900">激アツ!!</span>
           </>
         ) : preview.isAtsu && !preview.revealed ? (
           <span className="animate-pulse text-white/50">？？？</span>
         ) : (
-          <span>{preview.amino.code3}</span>
+          <span className="text-2xl" style={{ color: meta.color }}>
+            ●
+          </span>
         )}
       </div>
     </div>
@@ -38,30 +40,11 @@ function NextBox({ preview }: { preview: PreviewItem }) {
 
 export function PreviewPanel({ previewQueue }: Props) {
   if (previewQueue.length === 0) return null
-  const [next, ...queue] = previewQueue
+  const next = previewQueue[0]
 
   return (
     <div className="absolute right-2 top-2 z-20 flex flex-col items-end gap-2">
       <NextBox preview={next} />
-      {queue.length > 0 && (
-        <div className="flex flex-col items-center rounded-lg border border-white/15 bg-black/40 px-1.5 py-1">
-          <span className="mb-1 text-[8px] font-bold tracking-wider text-white/50">QUEUE</span>
-          <div className="flex flex-col gap-1">
-            {queue.map((p) => {
-              const meta = CATEGORY_META[p.amino.category]
-              return (
-                <div
-                  key={p.id}
-                  className="flex h-6 w-12 items-center justify-center rounded-md border text-[10px] font-bold text-white/90"
-                  style={{ borderColor: meta.color + 'aa', boxShadow: `0 0 6px ${meta.glow}` }}
-                >
-                  {p.amino.code3}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

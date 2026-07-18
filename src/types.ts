@@ -1,7 +1,6 @@
 import type { AminoAcid, Stage } from './data/aminoAcids'
 
 export type Screen = 'title' | 'playing' | 'gameover'
-export type Mode = 'A' | 'B'
 export type DisplayFormat = 'name' | 'code3'
 
 export interface FallingItem {
@@ -27,7 +26,6 @@ export type FrameTheme = 0 | 1 | 2 | 3
 
 export interface EngineState {
   screen: Screen
-  mode: Mode
   stage: Stage
   life: number
   maxLife: number
@@ -53,7 +51,6 @@ export interface EngineState {
   correctImpactKey: number
   lastScoreGain: number
   scorePopupKey: number
-  glowAssist: boolean
   revivalPending: boolean
   revivalOffered: boolean
   revivalTapsNeeded: number

@@ -5,7 +5,7 @@ import {
   type AminoAcid,
   type Stage,
 } from '../data/aminoAcids'
-import type { EngineState, FallingItem, Mode, PreviewItem } from '../types'
+import type { EngineState, FallingItem, PreviewItem } from '../types'
 import { useAudioEngine } from './useAudioEngine'
 
 const MAX_LIFE = 5
@@ -17,7 +17,6 @@ const REVIVAL_BASE_CHANCE = 0.3
 const REVIVAL_GUARANTEED_COMBO = 50
 const REVIVAL_TAPS_NEEDED = 12
 const REVIVAL_TIME_LIMIT_MS = 4000
-const GLOW_ASSIST_COMBO = 10
 const TICK_MS = 100
 const LANE_COUNT = 4
 const PREVIEW_QUEUE_LEN = 4
@@ -25,6 +24,15 @@ const PREVIEW_QUEUE_LEN = 4
 const FALL_DURATION_BY_STAGE: Record<Stage, number> = { 1: 4500, 2: 3800, 3: 3000 }
 const MAX_CONCURRENT_BY_STAGE: Record<Stage, number> = { 1: 2, 2: 2, 3: 3 }
 const SPAWN_INTERVAL_BY_STAGE: Record<Stage, number> = { 1: 1700, 2: 1350, 3: 1050 }
+
+// 正解数(hits)が増えるほど落下・出現が速くなる「加速」係数。
+// 1(等倍)からじわじわ下がり、SPEED_MIN_FACTORで頭打ちにして理不尽な速さを防ぐ。
+const SPEED_MIN_FACTOR = 0.45
+const SPEED_RAMP_PER_HIT = 0.008
+
+function speedFactor(hits: number): number {
+  return Math.max(SPEED_MIN_FACTOR, 1 - hits * SPEED_RAMP_PER_HIT)
+}
 
 function displayTextFor(amino: AminoAcid, format: 'name' | 'code3'): string {
   return format === 'name' ? amino.nameJa : amino.code3
@@ -71,13 +79,19 @@ function buildPreview(stage: Stage, seq: number): PreviewItem {
   }
 }
 
-function previewToFalling(preview: PreviewItem, stage: Stage, lane: number, spawnClock: number): FallingItem {
+function previewToFalling(
+  preview: PreviewItem,
+  stage: Stage,
+  lane: number,
+  spawnClock: number,
+  hits: number,
+): FallingItem {
   return {
     id: preview.id,
     amino: preview.amino,
     displayText: preview.displayText,
     isAtsu: preview.isAtsu,
-    fallDurationMs: FALL_DURATION_BY_STAGE[stage],
+    fallDurationMs: FALL_DURATION_BY_STAGE[stage] * speedFactor(hits),
     leftPercent: laneToPercent(lane),
     lane,
     spawnClock,
@@ -85,7 +99,7 @@ function previewToFalling(preview: PreviewItem, stage: Stage, lane: number, spaw
 }
 
 type Action =
-  | { type: 'START_GAME'; mode: Mode; stage: Stage }
+  | { type: 'START_GAME'; stage: Stage }
   | { type: 'TICK'; deltaMs: number }
   | { type: 'REVEAL_PREVIEW'; previewId: number }
   | { type: 'ANSWER_CORRECT'; itemId: number }
@@ -98,7 +112,6 @@ type Action =
 function initialState(): EngineState {
   return {
     screen: 'title',
-    mode: 'A',
     stage: 1,
     life: MAX_LIFE,
     maxLife: MAX_LIFE,
@@ -124,7 +137,6 @@ function initialState(): EngineState {
     correctImpactKey: 0,
     lastScoreGain: 0,
     scorePopupKey: 0,
-    glowAssist: false,
     revivalPending: false,
     revivalOffered: false,
     revivalTapsNeeded: REVIVAL_TAPS_NEEDED,
@@ -195,7 +207,7 @@ function reducer(state: EngineState, action: Action): EngineState {
         const head = previewQueue.shift()!
         const lane = pickLane(occupied)
         occupied.add(lane)
-        fallingItems.push(previewToFalling(head, action.stage, lane, 0))
+        fallingItems.push(previewToFalling(head, action.stage, lane, 0, 0))
         itemSeq += 1
         previewQueue.push(buildPreview(action.stage, itemSeq))
       }
@@ -203,7 +215,6 @@ function reducer(state: EngineState, action: Action): EngineState {
       return {
         ...s,
         screen: 'playing',
-        mode: action.mode,
         stage: action.stage,
         fallingItems,
         previewQueue,
@@ -259,7 +270,7 @@ function reducer(state: EngineState, action: Action): EngineState {
       let itemSeq = state.itemSeq
 
       const maxConcurrent = Math.min(LANE_COUNT, MAX_CONCURRENT_BY_STAGE[state.stage] + (fever ? 1 : 0))
-      const spawnInterval = SPAWN_INTERVAL_BY_STAGE[state.stage] * (fever ? 0.7 : 1)
+      const spawnInterval = SPAWN_INTERVAL_BY_STAGE[state.stage] * speedFactor(state.hits) * (fever ? 0.7 : 1)
 
       if (
         !revivalPending &&
@@ -271,7 +282,7 @@ function reducer(state: EngineState, action: Action): EngineState {
         const [head, ...rest] = previewQueue
         const occupied = new Set(fallingItems.map((f) => f.lane))
         const lane = pickLane(occupied)
-        fallingItems = [...fallingItems, previewToFalling(head, state.stage, lane, clock)]
+        fallingItems = [...fallingItems, previewToFalling(head, state.stage, lane, clock, state.hits)]
         itemSeq += 1
         previewQueue = [...rest, buildPreview(state.stage, itemSeq)]
         lastSpawnClock = clock
@@ -356,7 +367,6 @@ function reducer(state: EngineState, action: Action): EngineState {
         correctImpactKey: state.correctImpactKey + 1,
         lastScoreGain: gain,
         scorePopupKey: state.scorePopupKey + 1,
-        glowAssist: combo >= GLOW_ASSIST_COMBO,
       }
     }
     case 'ANSWER_WRONG': {
@@ -532,9 +542,9 @@ export function useGameEngine() {
   }, [state.screen, state.life, state.revivalPending])
 
   const startGame = useCallback(
-    (mode: Mode, stage: Stage) => {
+    (stage: Stage) => {
       audio.unlock()
-      dispatch({ type: 'START_GAME', mode, stage })
+      dispatch({ type: 'START_GAME', stage })
       window.setTimeout(() => audio.startBgm(false), 50)
     },
     [audio],

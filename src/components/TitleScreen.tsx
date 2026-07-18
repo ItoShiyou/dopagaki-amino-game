@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import type { Mode, Stage } from '../types'
+import type { Stage } from '../types'
 
 interface Props {
-  onStart: (mode: Mode, stage: Stage) => void
+  onStart: (stage: Stage) => void
 }
 
 const STAGE_INFO: { stage: Stage; label: string; desc: string }[] = [
@@ -12,7 +12,6 @@ const STAGE_INFO: { stage: Stage; label: string; desc: string }[] = [
 ]
 
 export function TitleScreen({ onStart }: Props) {
-  const [mode, setMode] = useState<Mode>('A')
   const [stage, setStage] = useState<Stage>(1)
 
   return (
@@ -29,34 +28,6 @@ export function TitleScreen({ onStart }: Props) {
       </div>
 
       <div className="z-10 w-full max-w-sm space-y-6">
-        <div>
-          <p className="mb-2 text-center text-sm font-bold text-fuchsia-200">モード選択</p>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => setMode('A')}
-              className={`rounded-2xl border-2 px-3 py-4 text-sm font-bold transition-all active:scale-95 ${
-                mode === 'A'
-                  ? 'border-yellow-300 bg-yellow-300/20 shadow-[0_0_20px_rgba(253,224,71,0.6)]'
-                  : 'border-white/20 bg-white/5'
-              }`}
-            >
-              モードA
-              <div className="mt-1 text-xs font-normal text-white/70">固定キーパッド</div>
-            </button>
-            <button
-              onClick={() => setMode('B')}
-              className={`rounded-2xl border-2 px-3 py-4 text-sm font-bold transition-all active:scale-95 ${
-                mode === 'B'
-                  ? 'border-yellow-300 bg-yellow-300/20 shadow-[0_0_20px_rgba(253,224,71,0.6)]'
-                  : 'border-white/20 bg-white/5'
-              }`}
-            >
-              モードB
-              <div className="mt-1 text-xs font-normal text-white/70">可変プッシュボタン</div>
-            </button>
-          </div>
-        </div>
-
         <div>
           <p className="mb-2 text-center text-sm font-bold text-fuchsia-200">ステージ選択</p>
           <div className="space-y-2">
@@ -79,7 +50,7 @@ export function TitleScreen({ onStart }: Props) {
       </div>
 
       <button
-        onClick={() => onStart(mode, stage)}
+        onClick={() => onStart(stage)}
         className="z-10 mb-2 w-full max-w-sm rounded-full bg-gradient-to-r from-yellow-300 via-pink-400 to-fuchsia-500 py-4 text-xl font-black text-black shadow-[0_0_30px_rgba(255,215,0,0.7)] transition-transform active:scale-95"
       >
         ゲームスタート！
